@@ -1,0 +1,27 @@
+const express = require("express");
+const router = express.Router();
+const sendEmailToList = require("../services/emailService");
+const {notEmptyString, invalidAddress} = require("../validation/addressValidation");
+
+router.post("/send-emails", async (req, res) => {
+    const {addressList, text} = req.body;
+
+    for(const address of addressList){
+        const invalid = invalidAddress(address);
+        if(invalid)
+            return res.status(400).json(invalid);
+    }
+
+    if(!notEmptyString(text))
+        return res.status(400).json({error: "Invalid or missing text message"});
+
+    try{
+        await sendEmailToList(addressList, text);
+        res.status(200).json({message: "Email send successfully"});
+    }catch(error){
+        console.log("Error sending emails:", error);
+        res.status(500).json({error: "Error sending emails", details: error.message});
+    }
+});
+
+module.exports = router;
