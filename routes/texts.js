@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const {getDb} = require("../db/db");
+const {getDb, connectToDb} = require("../db/db");
 const invalidText = require("../validation/textValidation");
+const { ObjectId } = require("mongodb");
 
 // get all texts
 router.get("/", (req, res) => {
@@ -18,6 +19,26 @@ router.get("/", (req, res) => {
     .catch((error) => {
         res.status(500).json({"Error": "Could not get texts", "Error message": error});
     });
+});
+
+// get text by id
+router.get("/:id", (req, res) => {
+    const db = getDb();
+    const id = req.params.id;
+
+    if (!ObjectId.isValid(id)) 
+        return res.status(400).json({ error: "Invalid ID format" });
+
+    db.collection("texts")
+    .findOne({_id : new ObjectId(id)})
+    .then((text) => {
+        if(!text)
+            return res.status(404).json({error: "text not found"});
+        res.status(200).json(text);
+    })
+    .catch((error) => {
+        res.status(500).json({"Error": "Could not get text by id", "Error message": error});
+    });;
 });
 
 // create new text

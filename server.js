@@ -1,4 +1,5 @@
 require("dotenv").config();
+const cors = require('cors');
 
 const express = require("express");
 const { connectToDb, getDb } = require("./db/db");
@@ -9,6 +10,7 @@ const emailRoutes = require("./routes/emailRoutes");
 const server = express();
 const PORT = 3000;
 
+server.use(cors());
 server.use(express.json());
 
 function dbConnectionCheck(req, res, next){

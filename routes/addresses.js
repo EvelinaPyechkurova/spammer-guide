@@ -21,6 +21,26 @@ router.get("/", (req, res) => {
     });
 });
 
+// get address by id
+router.get("/:id", (req, res) => {
+    const db = getDb();
+    const id = req.params.id;
+
+    if (!ObjectId.isValid(id)) 
+        return res.status(400).json({ error: "Invalid ID format" });
+
+    db.collection("addresses")
+    .findOne({_id : new ObjectId(id)})
+    .then((address) => {
+        if(!address)
+            return res.status(404).json({error: "address not found"});
+        res.status(200).json(address);
+    })
+    .catch((error) => {
+        res.status(500).json({"Error": "Could not get address by id", "Error message": error});
+    });;
+});
+
 //create new address
 router.post("/", (req, res) => {
     const db = getDb();
