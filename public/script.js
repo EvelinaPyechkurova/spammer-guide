@@ -1,71 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    fetchTexts();
-    fetchAddresses();
+    setupAddressButtons();
 });
 
 function notEmptyString(str) {
     return str && typeof str === "string" && str.trim() !== "";
-}
-
-async function fetchTexts() {
-    try {
-        const url = "http://localhost:3000/texts/";
-        const response = await fetch(url);
-        if (!response.ok) 
-            throw new Error(`Failed to fetch texts: ${response.statusText}`);
-        const texts = await response.json();
-        renderTexts(texts);
-    } catch (error) {
-        console.error("Error fetching texts:", error);
-    }
-}
-
-async function fetchAddresses(){
-    try{
-        const url = "http://localhost:3000/addresses/";
-        const responce = await fetch(url);
-        if(!responce.ok)
-            throw new Error(`Failed to fetch addresses: ${responce.statusText}`);
-        const addresses = await responce.json();
-        renderAddresses(addresses);
-    } catch (error) {
-        console.error("Error fetching addresses:", error);
-    }
-}
-
-function renderAddresses(addresses){
-    const addressList = document.getElementsByClassName("address-list")[0];
-    addressList.innerHTML = "";
-
-    addresses.forEach((address) => {
-        const card = document.createElement("div");
-        card.innerHTML = 
-        `<div class="card shadow-sm">
-            <label class="card-body">
-               <h5 class="card-title">${address.user.surname} ${address.user.name}</h5>
-                <h6 class="card-subtitle mb-2 text-muted">${address.user.fathername}</h6>
-                <p class="card-text">${address.email}</p>
-                <input type="checkbox" class="form-check-input address-checkbox" 
-                    data-id="${address._id}">
-                <div class="d-flex justify-content-between">
-                    <button class="btn btn-sm btn-warning button-edit" data-id="${address._id}">Edit</button>
-                    <button class="btn btn-sm btn-danger button-delete" data-id="${address._id}">Delete</button>
-                </div>
-
-                <form class="edit-form mt-3" style="display:none;">
-                    <input type="email" class="form-control mb-2" id="edit-email" value=${address.email} placeholder="Email">
-                    <input type="text" class="form-control mb-2" id="edit-name" value=${address.user.name} placeholder="Name">
-                    <input type="text" class="form-control mb-2" id="edit-fathername" value=${address.user.fathername} placeholder="Fathername">
-                    <input type="text" class="form-control mb-2" id="edit-surname" value=${address.user.surname} placeholder="Surname">
-                    <button type="submit" class="btn btn-primary btn-small">Save</button>
-                    <button type="button" class="btn btn-secondary btn-small cancel-edit">Cancel</button>
-                </form>  
-            </label>
-        </div>`
-        addressList.appendChild(card);
-    });
-
-    setupAddressButtons();
 }
 
 function setupAddressButtons(){
@@ -150,39 +88,6 @@ async function handleEdit(id, form){
     }catch(error){
         console.log("Error while editing address:", error);
     }
-}
-
-function renderTexts(texts){
-    const list = document.getElementById("text-list");
-    // list.innerHTML = "";
-
-    let i = 1;
-    texts.forEach(text => {
-        const listItem = document.createElement("li");
-        listItem.className = "list-group-item d-flex align-items-center";
-
-        const radio = document.createElement("input");
-        radio.type = "radio";
-        radio.name = "text-option";
-        radio.value = text._id;
-        radio.id = `option${i++}`;
-
-        const label = document.createElement("label");
-        label.textContent = `${text.text}`;
-        label.className = "ms-2";
-        label.setAttribute("for", radio.id);
-
-        listItem.appendChild(radio);
-        listItem.appendChild(label);
-        list.appendChild(listItem);
-    });
-
-    const customTextRadio = document.getElementById("option0");
-    const customTextArea = document.getElementById("custom-text-area");
-
-    customTextRadio.addEventListener("change", () => {
-        customTextArea.disabled = !customTextRadio.checked;
-    });
 }
 
 document.getElementsByClassName("send-button")[0].addEventListener("click", async () => {

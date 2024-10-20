@@ -14,7 +14,32 @@
         <div class="row w-100">
             <div class="col-6 text-center p-1 shadow-sm bg-white">
                 <h3>Addresses</h3>
-                <div class="address-list"></div>
+                <div class="address-list">
+                    {% for address in addresses %}
+                    <div class="card shadow-sm">
+                        <label class="card-body">
+                           <h5 class="card-title">{{address.user.surname}} {{address.user.name}}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{address.user.surname}}</h6>
+                            <p class="card-text">{{address.email}}</p>
+                            <input type="checkbox" class="form-check-input address-checkbox" 
+                                data-id="{{address._id}}">
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-sm btn-warning button-edit" data-id="{{address._id}}">Edit</button>
+                                <button class="btn btn-sm btn-danger button-delete" data-id="{{address._id}}">Delete</button>
+                            </div>
+            
+                            <form class="edit-form mt-3" style="display:none;">
+                                <input type="email" class="form-control mb-2" id="edit-email" value="{{address.email}}" placeholder="Email">
+                                <input type="text" class="form-control mb-2" id="edit-name" value="{{address.user.name}}" placeholder="Name">
+                                <input type="text" class="form-control mb-2" id="edit-fathername" value="{{address.user.fathername}}" placeholder="Fathername">
+                                <input type="text" class="form-control mb-2" id="edit-surname" value="{{address.user.surname}}" placeholder="Surname">
+                                <button type="submit" class="btn btn-primary btn-small">Save</button>
+                                <button type="button" class="btn btn-secondary btn-small cancel-edit">Cancel</button>
+                            </form>  
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
                 <div class="container mt-5 shadow-sm rounded border">
                     <form id="new-address-form">
                         <div class="my-3">
@@ -46,6 +71,12 @@
                         <label for="option0">Enter your own message</label>
                         <textarea id="custom-text-area" class="form-control mt-2" rows="3" disabled></textarea>
                     </li>
+                    {% for text in texts%}
+                    <li class="list-group-item d-flex align-items-center">
+                        <input type="radio" name="text-option" value="{{text._id}}", id="option{{loop.index}}">
+                        <label class="ms-2" for="option{{loop.index}}">{{text.text}}</label>
+                    </li>                        
+                    {% endfor %}
                 </ul>
             </div>
         </div>
