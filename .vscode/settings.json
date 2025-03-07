@@ -1,9 +1,9 @@
 {
-    "liveServer.settings.port": 5501,
     "files.associations": {
       "*.twig": "html"
     },
     "emmet.includeLanguages": {
       "twig": "html"
-    }
+    },
+    "prettier.tabWidth": 4
 }

@@ -1,8 +1,10 @@
 const express = require("express");
-const router = express.Router();
 const sendEmailToList = require("../services/emailService");
 const {notEmptyString, invalidAddress} = require("../validation/addressValidation");
 
+const router = express.Router();
+
+// send provided text message to provided addressess
 router.post("/send-emails", async (req, res) => {
     const {addressList, text} = req.body;
 

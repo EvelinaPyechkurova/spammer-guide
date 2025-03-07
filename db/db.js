@@ -2,7 +2,7 @@ const { MongoClient } = require('mongodb');
 
 let dbConnection;
 
-// initially connect to database
+// initially connects to database
 function connectToDb(cb){
     MongoClient.connect('mongodb://localhost:27017/spammer-guide')
     .then((client) => {
@@ -15,7 +15,7 @@ function connectToDb(cb){
     });
 }
 
-// retrive database connection once we already have connected to it
+// retrives existing database connection
 function getDb() {
     if (!dbConnection) 
         throw new Error('Database not connected!');

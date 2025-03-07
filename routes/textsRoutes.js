@@ -4,50 +4,8 @@ const {getDb} = require("../db/db");
 const invalidText = require("../validation/textValidation");
 const { ObjectId } = require("mongodb");
 
-/**
- * @swagger
- * /texts/:
- *   get:
- *     summary: Retrieve a list of predefined text messages from database
- *     description: Retrieve a list of predefined text messages from database. Used to populate a list of text templates when running a program.
- *     responses:
- *       200:
- *         description: A list of predefined text messages.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 texts:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       _id:
- *                         type: string
- *                         description: The ID of the text message
- *                         example: 507f1f77bcf86cd799439011
- *                       text:
- *                         type: string
- *                         description: Text message content.
- *                         example: You've been selected for a special opportunity to delete this email immediately!
- *       500:
- *         description: Error while getting texts.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 Error:
- *                   type: string
- *                   description: The error message
- *                   example: "Could not get texts"
- *                 "Error message":
- *                   type: string
- *                   description: Detailed error message
- *                   example: "Database connection failed"
- */
-router.get("/", (req, res) => {
+// get all text messages
+router.get("/", (_req, res) => {
     const db = getDb();
     let texts = [];
 
@@ -63,44 +21,8 @@ router.get("/", (req, res) => {
     });
 });
 
-/**
- * @swagger
- * /texts/{id}:
- *   get:
- *     summary: Retrieve a single predefined text message with specified id.
- *     description: Retrieve a single predefined text message with specified id from database. Used to select single text.
- *     responses:
- *       200:
- *         description: A single predefined text message.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                   description: The ID of the text message
- *                   example: 507f1f77bcf86cd799439011
- *                 text:
- *                   type: string
- *                   description: Text message content.
- *                   example: You've been selected for a special opportunity to delete this email immediately!
- *       500:
- *         description: Error while getting texts.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 Error:
- *                   type: string
- *                   description: The error message
- *                   example: "Could not get texts"
- *                 "Error message":
- *                   type: string
- *                   description: Detailed error message
- *                   example: "Database connection failed"
- */
+
+// get text message by id
 router.get("/:id", (req, res) => {
     const db = getDb();
     const id = req.params.id;
@@ -120,7 +42,8 @@ router.get("/:id", (req, res) => {
     });;
 });
 
-// create new text
+
+// create new text message
 router.post("/", (req, res) => {
     const db = getDb();
     const text = req.body;

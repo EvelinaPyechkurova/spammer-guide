@@ -1,14 +1,6 @@
 require('dotenv').config({ path: '../.env' });
 const nodemailer = require("nodemailer");
 
-// const transporter = nodemailer.createTransport({
-//     service: "gmail",
-//     auth: {
-//         user: process.env.EMAIL_USER,
-//         pass: process.env.EMAIL_PASS
-//     }
-// });
-
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -22,6 +14,7 @@ const transporter = nodemailer.createTransport({
     }
 });
 
+// send given text message to given addressess
 async function sendEmailToList(addressList, text) {
 
     for(const address of addressList){
@@ -33,7 +26,7 @@ async function sendEmailToList(addressList, text) {
         };
 
         try{
-            let result = await transporter.sendMail(mailOptions);
+            await transporter.sendMail(mailOptions);
             console.log(`Send email to ${address.email}`);
         }catch(error){
             console.error(`Error sending email to ${address.email}:`, error);
