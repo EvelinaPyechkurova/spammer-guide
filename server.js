@@ -52,7 +52,9 @@ server.use("/emails", emailRoutes);
 
 // Configure view engine and where to look for template files
 server.set("view engine", "twig");
-server.set("views", ".");
+server.set("views", __dirname+"/public");
+
+server.use(express.static(__dirname+"/public"));
 
 // Fetch all text messages
 async function fetchTexts() {

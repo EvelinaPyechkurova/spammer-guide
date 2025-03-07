@@ -40,11 +40,23 @@ function setupAddressButtons(){
     });
 }
 
+document.getElementById("option0").addEventListener("change", (event) => {
+    let customTextArea = document.getElementById("custom-text-area");
+
+    customTextArea.disabled = !event.target.checked;
+
+    if (event.target.checked) {
+        customTextArea.focus();
+    } else {
+        customTextArea.value = "";
+    }
+});
+
 async function handleDelete(id){
     try{
         const url = `http://localhost:3000/addresses/${id}`;
-        const responce = await fetch(url, {method: "DELETE"});
-        if(!responce.ok)
+        const response = await fetch(url, {method: "DELETE"});
+        if(!response.ok)
             throw new Error(`Error occured while deleting address with id ${id}: ${response.statusText}`);
         console.log(`Address with id ${id} deleted successfully`);
         window.location.reload();
@@ -72,7 +84,7 @@ async function handleEdit(id, form){
 
     try{
         const url = `http://localhost:3000/addresses/${id}`;
-        const responce = await fetch(url, {
+        const response = await fetch(url, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json"
@@ -80,7 +92,7 @@ async function handleEdit(id, form){
             body: JSON.stringify(updatedAddress)
         });
 
-        if(!responce.ok)
+        if(!response.ok)
             throw new Error(`Error occured while editing address with id ${id}: ${response.statusText}`);
 
         console.log(`Address with id ${id} edited successfully`);
@@ -93,8 +105,7 @@ async function handleEdit(id, form){
 document.getElementsByClassName("send-button")[0].addEventListener("click", async () => {
     const text = await getText();
     const addressList = await getAddressList();
-    console.log(text);
-    console.log(addressList);
+
     const response = await fetch("http://localhost:3000/emails/send-emails", {
         method: 'POST',
         headers: {
@@ -118,14 +129,18 @@ async function getText(){
     let text;
 
     const value = selectedOption.value;
+
     if(value === "custom"){
-        const customAreaText = document.getElementById("custom-text-area");
-        const message = customAreaText.value;
+        console.log("Inside custom block");
+        let customTextArea = document.getElementById("custom-text-area");
+
+        const message = customTextArea.value;
         if(!notEmptyString(message)){
             alert("Please enter a valid, non-empty message.");
             return;
         }
         text = message;
+        console.log(`Got ${message}`);
     }else{
         const selectedId = value;
         text = await selectText(selectedId);
@@ -136,10 +151,10 @@ async function getText(){
 async function selectText(id){
     try {
         const url = `http://localhost:3000/texts/${id}`;
-        const responce = await fetch(url);
-        if(!responce.ok)
+        const response = await fetch(url);
+        if(!response.ok)
             throw new Error(`Failed to fetch text by id: ${response.statusText}`);
-        const result = await responce.json();
+        const result = await response.json();
         return result.text;
     } catch (error) {
         console.error("Error fetching text templates:", error)
@@ -169,10 +184,10 @@ async function getAddressList(){
 async function selectAddress(id){
     try{
         const url = `http://localhost:3000/addresses/${id}`;
-        const responce = await fetch(url);
-        if(!responce.ok)
+        const response = await fetch(url);
+        if(!response.ok)
             throw new Error(`Failed to fetch address by id: ${response.statusText}`);
-        const result = await responce.json();
+        const result = await response.json();
         const {_id, ...addressWithoutId} = result;
         return addressWithoutId
     }catch(error){
@@ -262,8 +277,4 @@ function invalidUpdate(update) {
     }
 
     return errors.length > 0 ? { errors } : null;
-}
-
-function notEmptyString(str){
-    return str && typeof str === "string" && str.trim() !== "";
 }
